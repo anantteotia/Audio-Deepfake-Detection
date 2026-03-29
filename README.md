@@ -4,113 +4,186 @@
 
 This project implements machine learning models to detect AI-generated or manipulated audio (deepfakes) using state-of-the-art transformer architectures. With the proliferation of voice cloning and synthetic speech generation technologies, detecting fake audio has become crucial for applications in cybersecurity, journalism verification, legal evidence authentication, and fraud prevention.
 
-## Objectives
+## Project Status
 
-- Implement and fine-tune transformer-based models for audio deepfake detection
-- Compare performance across different architectures
-- Analyze attention patterns to understand acoustic features that distinguish real from synthetic audio
-- Evaluate computational efficiency and accuracy trade-offs
+🚀 **Implementation Started** - Core modules complete, ready for dataset and training.
 
-## Models to Implement
+## Quick Start
 
-### Primary Models
-- **Wav2Vec 2.0**: Self-supervised learning model for speech representation
-- **HuBERT** (Hidden-Unit BERT): Masked prediction approach for speech processing
-- **Audio Spectrogram Transformer (AST)**: Vision transformer adapted for audio spectrograms
+```bash
+# Clone and setup
+cd G:\Code\Audio-Deepfake-Detection
+pip install -r requirements.txt
 
-### Baseline Models (for comparison)
-- Traditional ML approaches (SVM, Random Forest)
-- CNN-based architectures
+# Prepare data directory structure
+python src/download.py --data_dir data
+
+# Download a dataset (ASVspoof, WaveFake, FakeAVCeleb)
+# Or place your own data in data/train/real and data/train/fake
+
+# Train a model
+python src/train.py --model_type transformer --model_name wav2vec2 --epochs 10
+
+# Evaluate
+python src/evaluate.py --data_dir data/test --model_path checkpoints/best_model.pt
+```
+
+## Project Structure
+
+```
+Audio-Deepfake-Detection/
+├── data/                    # Dataset directory
+│   ├── train/               # Training data
+│   │   ├── real/            # Real audio files
+│   │   └── fake/            # Fake audio files
+│   ├── val/                 # Validation data
+│   └── test/                # Test data
+├── src/                     # Source code
+│   ├── data_loader.py       # Data loading & preprocessing
+│   ├── train.py             # Training script
+│   ├── evaluate.py          # Evaluation script
+│   └── download.py          # Dataset download utilities
+├── models/                  # Model implementations
+│   ├── baseline.py          # CNN, MLP, Random Forest, SVM
+│   └── transformer.py       # Wav2Vec2, HuBERT, AST
+├── configs/                 # Configuration files
+│   └── default.yaml         # Default training config
+├── notebooks/               # Jupyter notebooks
+├── requirements.txt         # Python dependencies
+└── README.md
+```
+
+## Models Implemented
+
+### Transformer Models
+| Model | Description | Pretrained |
+|-------|-------------|------------|
+| Wav2Vec2 | Self-supervised speech representation | facebook/wav2vec2-base |
+| HuBERT | Masked prediction for speech | facebook/hubert-base-ls960 |
+| AST | Vision transformer for spectrograms |从头训练 |
+
+### Baseline Models
+| Model | Type |
+|-------|------|
+| CNN | Convolutional Neural Network |
+| MLP | Multi-layer Perceptron |
+| Random Forest | Traditional ML |
+| SVM | Support Vector Machine |
 
 ## Datasets
 
-### Primary Datasets
+### Supported Datasets
 - **ASVspoof 2019/2021**: Standard benchmark for audio anti-spoofing
 - **FakeAVCeleb**: Audio-visual deepfake dataset
 - **WaveFake**: Synthetic speech detection dataset
 
-### Data Characteristics
-- Real human speech samples
-- AI-generated audio from various synthesis methods (TTS, voice conversion, vocoder artifacts)
-- Multiple languages and speakers
-- Various recording conditions
+### Data Format
+- Format: WAV (16-bit PCM)
+- Sample Rate: 16 kHz
+- Duration: 1-10 seconds (padded/truncated to max_duration)
+- Channels: Mono
+
+## Training
+
+### Basic Training
+```bash
+python src/train.py --data_dir data --epochs 10 --batch_size 16 --lr 1e-4
+```
+
+### With Weights & Biases
+```bash
+python src/train.py --data_dir data --use_wandb --wandb_project audio-deepfake --run_name exp1
+```
+
+### Training Options
+```bash
+python src/train.py --help
+# --model_type [transformer|baseline]
+# --model_name [wav2vec2|hubert|ast|cnn|mlp]
+# --feature_type [raw|mel|mfcc]
+# --epochs, --batch_size, --lr, etc.
+```
+
+## Evaluation
+
+```bash
+python src/evaluate.py \
+    --data_dir data/test \
+    --model_path checkpoints/best_model.pt \
+    --model_type transformer \
+    --model_name wav2vec2 \
+    --output_path results.json
+```
+
+Outputs: Accuracy, Precision, Recall, F1, AUC-ROC, Confusion Matrix
+
+## Configuration
+
+Edit `configs/default.yaml` or create your own config:
+
+```yaml
+model:
+  model_type: "transformer"
+  model_name: "wav2vec2"
+  freeze_features: true
+
+training:
+  epochs: 10
+  lr: 0.0001
+
+logging:
+  use_wandb: true
+  wandb_project: "audio-deepfake"
+```
 
 ## Technical Approach
 
 ### 1. Data Preprocessing
-- Audio loading and normalization
-- Feature extraction:
-  - Raw waveforms (for Wav2Vec 2.0, HuBERT)
-  - Mel spectrograms (for AST)
-  - MFCCs (for baseline models)
-- Data augmentation (time stretching, pitch shifting, noise injection)
+- Audio loading with librosa
+- Feature extraction (raw, mel spectrogram, MFCC)
+- Padding/truncation to fixed length
+- Data augmentation (optional)
 
 ### 2. Model Implementation
-- Load pre-trained transformer models
+- Load pretrained transformers from Hugging Face
 - Fine-tune on deepfake detection task
-- Implement attention visualization
-- Compare transfer learning vs. training from scratch
+- Optional: freeze backbone, train only classifier
 
-### 3. Evaluation Metrics
+### 3. Evaluation
 - Accuracy, Precision, Recall, F1-Score
-- Equal Error Rate (EER)
 - ROC-AUC
+- Equal Error Rate (EER)
 - Confusion matrices
-- Computational efficiency (inference time, model size)
-
-### 4. Analysis
-- Attention pattern visualization
-- Feature importance analysis
-- Error analysis (false positives/negatives)
-- Generalization across different synthesis methods
-
-## Project Timeline
-
-- **Week 1-2**: Literature review, dataset preparation
-- **Week 3-4**: Baseline model implementation
-- **Week 5-6**: Transformer model implementation and fine-tuning
-- **Week 7-8**: Evaluation, analysis, and documentation
 
 ## Technology Stack
 
-- **Programming Language**: Python 3.8+
-- **Deep Learning Frameworks**: PyTorch, TensorFlow
-- **Audio Processing**: librosa, torchaudio, soundfile
-- **Pre-trained Models**: Hugging Face Transformers
-- **Visualization**: matplotlib, seaborn, tensorboard
-- **Experiment Tracking**: Weights & Biases (wandb)
+- **Python**: 3.8+
+- **PyTorch**: Deep learning framework
+- **librosa**: Audio processing
+- **transformers**: Hugging Face pretrained models
+- **wandb**: Experiment tracking
+- **sklearn**: Baseline models & metrics
 
 ## Research Alignment
 
 This project aligns with ongoing research at Dr. Li Yang's lab (UNC Charlotte) on optimizing Audio and Video Transformers, specifically exploring attention-based mechanisms and computational efficiency in multimodal models.
 
-## Expected Outcomes
+## To Do
 
-1. Trained deepfake detection models with competitive performance
-2. Comparative analysis of transformer architectures for audio classification
-3. Insights into acoustic features that distinguish real from synthetic audio
-4. Potential for computational optimization in detection pipeline
-5. Comprehensive documentation and reproducible code
+- [ ] Download and prepare dataset
+- [ ] Train baseline models (CNN, Random Forest)
+- [ ] Train transformer models (Wav2Vec2, HuBERT)
+- [ ] Compare model performance
+- [ ] Analyze attention patterns
+- [ ] Optimize for efficiency
+- [ ] Write final report
 
-## References
+## License
 
-Key papers to review:
-1. ASVspoof Challenge papers (2019, 2021)
-2. "Wav2Vec 2.0: A Framework for Self-Supervised Learning of Speech Representations"
-3. "HuBERT: Self-Supervised Speech Representation Learning by Masked Prediction"
-4. "Audio Spectrogram Transformer for Audio Classification"
-5. Recent deepfake detection papers from ICASSP, Interspeech, IEEE conferences
-
-## Status
-
-🚧 **Project in planning phase** - Repository setup complete, beginning literature review and dataset acquisition.
+MIT License
 
 ## Contact
 
 **Anant Teotia**  
 Graduate Research Assistant, UNC Charlotte  
 Email: anant.teotia@outlook.com
-
-## License
-
-MIT License (to be added)

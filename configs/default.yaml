@@ -1,0 +1,46 @@
+# Training Configuration for Audio Deepfake Detection
+
+# Data
+data:
+  data_dir: "data"
+  feature_type: "mel"  # raw, mel, mfcc
+  sample_rate: 16000
+  max_duration: 4.0
+  batch_size: 16
+  num_workers: 4
+
+# Model
+model:
+  model_type: "transformer"  # baseline or transformer
+  model_name: "wav2vec2"  # wav2vec2, hubert, ast, cnn, mlp
+  freeze_features: true
+  dropout: 0.3
+
+# Training
+training:
+  epochs: 10
+  lr: 0.0001
+  weight_decay: 0.01
+  warmup_steps: 500
+
+# Evaluation
+evaluation:
+  metrics:
+    - accuracy
+    - precision
+    - recall
+    - f1
+    - auc
+
+# Logging
+logging:
+  use_wandb: false
+  wandb_project: "audio-deepfake"
+  log_interval: 10
+  save_interval: 1
+
+# Paths
+paths:
+  output_dir: "checkpoints"
+  best_model: "checkpoints/best_model.pt"
+  final_model: "checkpoints/final_model.pt"
