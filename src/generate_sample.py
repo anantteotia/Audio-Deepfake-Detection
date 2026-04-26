@@ -45,7 +45,8 @@ def generate_sample(output_path, sample_type="real", sample_rate=16000, duration
         # Add clicks/pops (artifact simulation)
         click_samples = np.random.randint(0, int(sample_rate * duration), 5)
         for cs in click_samples:
-            audio[cs:cs+50] += np.random.randn(50) * 0.5
+            end = min(cs + 50, audio.shape[0])
+            audio[cs:end] += np.random.randn(end - cs) * 0.5
     
     # Normalize
     audio = audio / np.max(np.abs(audio)) * 0.8
@@ -96,18 +97,18 @@ def verify_dataset(data_dir):
     """Verify dataset structure and can be loaded."""
     print("\nVerifying dataset...")
     
-    from data_loader import AudioDeepfakeDataset
+    from src.data_loader import AudioDeepfakeDataset
     
     try:
-        # Try loading train set
+        # Try loading train split (expected structure: data/train/{real,fake})
         dataset = AudioDeepfakeDataset(
-            data_dir=data_dir,
+            data_dir=os.path.join(data_dir, "train"),
             feature_type="mel",
             sample_rate=16000,
             max_duration=4.0
         )
         
-        print(f"✓ Dataset loaded successfully!")
+        print("OK: Dataset loaded successfully!")
         print(f"  Total samples: {len(dataset)}")
         
         # Get a sample
@@ -123,7 +124,7 @@ def verify_dataset(data_dir):
         return True
         
     except Exception as e:
-        print(f"✗ Error loading dataset: {e}")
+        print(f"ERROR loading dataset: {e}")
         return False
 
 
@@ -132,7 +133,7 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description="Generate synthetic audio dataset")
     parser.add_argument("--data_dir", type=str, default="data", help="Data directory")
-    parser.add_argument("--num_samples", type=int, default=60, help="Samples per split")
+    parser.add_argument("--num_samples", type=int, default=60, help="Samples per class (real/fake) total, then split)")
     parser.add_argument("--verify", action="store_true", help="Verify after generation")
     
     args = parser.parse_args()

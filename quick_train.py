@@ -2,10 +2,8 @@
 Quick training test - runs 2 epochs to verify pipeline works.
 """
 
-import sys
-sys.path.insert(0, r'G:\Code\Audio-Deepfake-Detection')
-
 import os
+from pathlib import Path
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
@@ -16,8 +14,9 @@ from src.data_loader import AudioDeepfakeDataset
 from models.baseline import AudioClassifierCNN
 
 # Config
-DATA_DIR = r'G:\Code\Audio-Deepfake-Detection\data'
-OUTPUT_DIR = r'G:\Code\Audio-Deepfake-Detection\checkpoints'
+REPO_ROOT = Path(__file__).resolve().parent
+DATA_DIR = str(REPO_ROOT / "data")
+OUTPUT_DIR = str(REPO_ROOT / "checkpoints")
 BATCH_SIZE = 16
 EPOCHS = 2
 LR = 1e-3

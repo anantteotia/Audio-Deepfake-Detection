@@ -49,9 +49,9 @@ def train_epoch(model, dataloader, criterion, optimizer, device, is_transformer=
         probs = torch.softmax(logits, dim=1)[:, 1]
         preds = torch.argmax(logits, dim=1)
         
-        all_preds.extend(preds.cpu().numpy())
-        all_labels.extend(labels.cpu().numpy())
-        all_probs.extend(probs.cpu().numpy())
+        all_preds.extend(preds.detach().cpu().numpy())
+        all_labels.extend(labels.detach().cpu().numpy())
+        all_probs.extend(probs.detach().cpu().numpy())
         
         pbar.set_postfix({"loss": f"{loss.item():.4f}"})
     
@@ -85,9 +85,9 @@ def evaluate(model, dataloader, criterion, device, is_transformer=False):
             probs = torch.softmax(logits, dim=1)[:, 1]
             preds = torch.argmax(logits, dim=1)
             
-            all_preds.extend(preds.cpu().numpy())
-            all_labels.extend(labels.cpu().numpy())
-            all_probs.extend(probs.cpu().numpy())
+            all_preds.extend(preds.detach().cpu().numpy())
+            all_labels.extend(labels.detach().cpu().numpy())
+            all_probs.extend(probs.detach().cpu().numpy())
     
     avg_loss = total_loss / len(dataloader)
     accuracy = accuracy_score(all_labels, all_preds)

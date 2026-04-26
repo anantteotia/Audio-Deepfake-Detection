@@ -1,0 +1,20 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.venv/
+venv/
+
+# Data / artifacts
+checkpoints/
+data/
+*.pt
+*.pth
+
+# Local caches
+.cache/
+_caches/
+
+# Generated outputs (keep report + JSON metrics tracked)

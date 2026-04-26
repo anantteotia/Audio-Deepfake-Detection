@@ -25,3 +25,6 @@ wandb>=0.15.0
 
 # Evaluation
 scipy>=1.11.0
+
+# Report generation (PDF)
+reportlab>=4.0.0
