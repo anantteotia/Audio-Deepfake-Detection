@@ -254,7 +254,7 @@ def build_pdf(out_pdf: Path):
     story.append(Paragraph("7. (Anonymous) Sharing agreement", styles["H1"]))
     story.append(
         Paragraph(
-            "I do <b>not</b> agree to share this submission as an example for next semester. (This field can be changed by the student before final Canvas upload if desired.)",
+            "I agree to share this submission as an example for next semester, but I would like to <b>hide my name/team</b> if it is shared.",
             styles["Body"],
         )
     )
