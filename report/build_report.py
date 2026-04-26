@@ -82,7 +82,14 @@ def build_pdf(out_pdf: Path):
     # Cover page
     story.append(Paragraph("PROJECT FINAL REPORT", styles["H1"]))
     story.append(Paragraph("<b>Project Title:</b> Audio Deepfake Detection using Transformer-based Models", styles["Body"]))
-    story.append(Paragraph("<b>Name:</b> Anant Teotia", styles["Body"]))
+    story.append(
+        Paragraph(
+            "<b>Name:</b> Anant Teotia<br/>"
+            "<b>Course:</b> ITCS 5154 - Applied Machine Learning<br/>"
+            "<b>Instructor:</b> Ziyu Liu (zliu23@charlotte.edu)",
+            styles["Body"],
+        )
+    )
     story.append(
         Paragraph(
             "<b>Primary paper (method backbone):</b> Baevski et al., “wav2vec 2.0: A Framework for Self-Supervised Learning of Speech Representations”, NeurIPS 2020.",
