@@ -148,7 +148,7 @@ def build_pdf(out_pdf: Path):
     )
     story.append(
         Paragraph(
-            "<b>(C)</b> Modern anti-spoofing architectures (e.g., RawNet-style models and attention-based models such as AASIST) often combine time–frequency cues with strong temporal modeling to improve robustness.",
+            "<b>(C)</b> Modern anti-spoofing architectures (e.g., RawNet-style models and attention-based models such as AASIST) often combine time-frequency cues with strong temporal modeling to improve robustness.",
             styles["Body"],
         )
     )

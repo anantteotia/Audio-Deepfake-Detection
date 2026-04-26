@@ -40,7 +40,7 @@ def main():
         metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
         cm = np.array(metrics["confusion_matrix"], dtype=int)
         out_path = figures_dir / f"confusion_{metrics_path.stem}.png"
-        save_confusion_matrix(cm, out_path, f"{name} – Confusion Matrix (Test)")
+        save_confusion_matrix(cm, out_path, f"{name} - Confusion Matrix (Test)")
 
     print(f"Figures written to: {figures_dir}")
 
